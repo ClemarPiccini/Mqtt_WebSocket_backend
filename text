@@ -1,0 +1,10 @@
+
+    - casa: Temperatura em oC vezes 10, medida por um BCM204A;
+ 
+    - calibracao: Temperatura em oC vezes 10, medida por outro BCM204A;
+ 
+    - LigadoMin: tempo total de operação ininterrupta do BCM204A (casa), em minutos;
+ 
+    - BCM365C_2: Peso, em gramas, medido por um módulo BCM365C em teste aqui na BCM;
+ 
+    - umidade: Medida de umidade de um composto de teste, em %;
