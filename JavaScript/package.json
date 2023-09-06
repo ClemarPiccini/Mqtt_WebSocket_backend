@@ -2,9 +2,9 @@
   "name": "javascript",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "npx nodemon ./JavaScript/src/app.js"
+    "start": "npx nodemon ./src/app.js"
   },
   "author": "",
   "license": "ISC",
