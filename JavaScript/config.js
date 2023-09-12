@@ -15,7 +15,8 @@ client.on('connect', () => {
 
   // Quando uma mensagem é recebida em algum dos tópicos
   client.on('message', (topic, message) => {
-    console.log(new Date().toISOString() + ` - Mensagem recebida no tópico ${topic}: ${message.toString()}`);
+    console.log(new Date().toISOString() + ` - Mensagem recebida no tópico ${topic}: ${message.toString()}`); 
+    console.log(typeof message)
     if (
       topic === 'casa' ||
       topic === 'calibracao' ||

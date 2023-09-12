@@ -1,49 +1,47 @@
-const mqtt = require('mqtt');
-const brokerUrl = 'mqtt://broker.mqttdashboard.com';
-const client = mqtt.connect(brokerUrl);
+const client = require('../../config');
+const Casa = require('../models/casa');
+const Calibracao = require('../models/calibracao');
+const Bcm = require('../models/bcm');
+const LigadoMin = require('../models/ligado');
+const Umidade = require('../models/umidade');
 
-const { DataTypes } = require('sequelize');
-const sequelize = require('../models/core');
-const MqttData = require('../models/mqtt');
+client.on('message', async function (topic, message) {
+  try {
+    const data = JSON.parse(message.toString());
 
-client.on('connect', () => {
-  console.log('Conexão estabelecida com sucesso!');
-
-  // Subscreve aos tópicos para receber as mensagens
-  client.subscribe('casa');
-  client.subscribe('calibracao');
-  client.subscribe('LigadoMin');
-  client.subscribe('BCM365C_2');
-  client.subscribe('umidade');
-
-  // Quando uma mensagem é recebida em algum dos tópicos
-  client.on('message', async (topic, message) => {
-    console.log(new Date().toISOString() + ` - Mensagem recebida no tópico ${topic}: ${message.toString()}`);
-
-    // Converter a mensagem para um valor numérico
-    let value = parseFloat(message.toString());
-    if (!isNaN(value)) {
-      if (topic === 'casa' || topic === 'calibracao') {
-        // Multiplicar por 10 para temperatura em oC
-        value /= 10;
-      }
-
-      // Objeto para inserção no banco de dados
-      const dataToInsert = {
-        [topic]: value,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      try {
-        // Inserir os dados na tabela MqttData
-        await MqttData.create(dataToInsert);
-        console.log(`Dados inseridos no banco de dados para o tópico ${topic}: ${value}`);
-      } catch (err) {
-        console.error('Erro ao inserir dados no banco de dados:', err);
-      }
+    // Verificar qual tabela deve ser usada com base no tópico
+    let model;
+    if (topic === 'casa') {
+      model = Casa;
+    } else if (topic === 'calibracao') {
+      model = Calibracao;
+    } else if (topic === 'BCM365C_2') {
+      model = Bcm;
+    } else if (topic === 'LigadoMin') {
+      model = LigadoMin;
+    } else if (topic === 'umidade') {
+      model = Umidade;
     }
-  });
+    if (model) {
+      // Verificar se os dados são válidos antes de criar o registro
+      if (isValidData(data)) {
+        await model.create({ data });
+        console.log(`Dados inseridos com sucesso na tabela ${topic}`);
+      } else {
+        console.log(`Dados inválidos no tópico ${topic}, não foram inseridos.`);
+      }
+    } else {
+      console.log(`Tópico ${topic} não reconhecido, dados não foram inseridos.`);
+    }
+
+  } catch (err) {
+    console.error('Ocorreu um erro:', err);
+  }
 });
 
-module.exports = client;
+// Função para verificar a validade dos dados
+function isValidData(data) {
+  return !!data;
+}
+
+module.exports
