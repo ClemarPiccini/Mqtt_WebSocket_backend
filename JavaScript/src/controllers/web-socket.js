@@ -61,3 +61,5 @@ mqttClient.on('connect', () => {
     });
   });
 });
+
+module.exports
