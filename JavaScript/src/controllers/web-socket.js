@@ -3,11 +3,8 @@ const mqtt = require('mqtt');
 const message = require('./mqtt-controller');
 const mqttClient = mqtt.connect('mqtt://broker.mqttdashboard.com');
 const wss = new WebSocket.Server({ port: 8081 });
-const Casa = require('../models/casa');
+const BCM240_S = require('../models/BCM240_S');
 const Calibracao = require('../models/calibracao');
-const Bcm = require('../models/bcm');
-const LigadoMin = require('../models/ligado');
-const Umidade = require('../models/umidade');
 
 // Função para enviar dados de uma tabela específica para todos os clientes WebSocket
 async function sendTableDataToClients(tableModel, tableName) {
@@ -30,11 +27,8 @@ async function sendTableDataToClients(tableModel, tableName) {
 wss.on('connection', (ws) => {
   console.log('Novo cliente conectado');
     // Envie os dados das tabelas para o cliente quando ele se conectar
-    sendTableDataToClients(Casa, 'casa');
+    sendTableDataToClients(BCM240_S, 'BCM240_S');
     sendTableDataToClients(Calibracao, 'calibracao');
-    sendTableDataToClients(LigadoMin, 'LigadoMin');
-    sendTableDataToClients(Bcm, 'BCM365C_2');
-    sendTableDataToClients(Umidade, 'umidade');
     
   ws.send(JSON.stringify(message));
   console.log(message)
@@ -45,11 +39,9 @@ wss.on('connection', (ws) => {
 
 mqttClient.on('connect', () => {
   console.log('Conectado ao broker MQTT');
-  mqttClient.subscribe('casa');
+  mqttClient.subscribe('BCM240_S');
   mqttClient.subscribe('calibracao');
-  mqttClient.subscribe('LigadoMin');
-  mqttClient.subscribe('BCM365C_2');
-  mqttClient.subscribe('umidade');
+
   mqttClient.on('message', (topic, message) => {
     const teste = '{"'+ topic + '":' + message+'}'; //  variavel que envia pro web socket 
     const data = JSON.parse(teste);

@@ -1,26 +1,26 @@
 const Sequelize = require('sequelize');
 const sequelize = require('./core');
 
-const Calibracao = sequelize.define('Calibracao', {
+const BCM240_S = sequelize.define('BCM240_S', {
   data: {
     type: Sequelize.JSON,
     allowNull: false,
   },
-  limite_min_temp: {
+  limite_min_vibracao: {
     type: Sequelize.INTEGER,
     allowNull: false,
     references: {
-      model: 'LimiteCalibracaos',
-      key: 'limite_min_temp',
+      model: 'LimiteBcms',
+      key: 'limite_min_vibracao',
     },
     onUpdate: 'CASCADE',
   },
-  limite_max_temp: {
+  limite_max_vibracao: {
     type: Sequelize.INTEGER,
     allowNull: false,
     references: {
-      model: 'LimiteCalibracaos',
-      key: 'limite_max_temp',
+      model: 'LimiteBcms',
+      key: 'limite_max_vibracao',
     },
     onUpdate: 'CASCADE',
   },
@@ -30,6 +30,6 @@ const Calibracao = sequelize.define('Calibracao', {
   }
 });
 
-Calibracao.sync();
+BCM240_S.sync();
 
-module.exports = Calibracao;
+module.exports = BCM240_S;

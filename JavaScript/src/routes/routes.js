@@ -1,9 +1,6 @@
 const express = require('express');
-const Casa = require('../models/casa');
+const BCM240_S = require('../models/BCM240_S');
 const Calibracao = require('../models/calibracao');
-const Bcm = require('../models/bcm');
-const LigadoMin = require('../models/ligado');
-const Umidade = require('../models/umidade');
 
 const router = express.Router();
 
@@ -20,24 +17,15 @@ async function getTableData(model) {
 
 router.get('/:tableName', async (req, res) => {
   const { tableName } = req.params;
-  let data;
+  let data; 
 
   try {
     switch (tableName) {
-      case 'casa':
-        data = await getTableData(Casa);
+      case 'BCM240_S':
+        data = await getTableData(BCM240_S);
         break;
       case 'calibracao':
         data = await getTableData(Calibracao);
-        break;
-      case 'bcm':
-        data = await getTableData(Bcm);
-        break;
-      case 'ligado':
-        data = await getTableData(LigadoMin);
-        break;
-      case 'umidade':
-        data = await getTableData(Umidade);
         break;
       default:
         return res.status(404).json({ message: 'Tabela não encontrada' });
@@ -48,28 +36,5 @@ router.get('/:tableName', async (req, res) => {
     res.status(500).json({ message: 'Erro ao buscar dados da tabela' });
   }
 });
-
-router.get('/', async (req, res) => {
-    try {
-      const casaData = await getTableData(Casa);
-      const calibracaoData = await getTableData(Calibracao);
-      const bcmData = await getTableData(Bcm);
-      const ligadoMinData = await getTableData(LigadoMin);
-      const umidadeData = await getTableData(Umidade);
-  
-      // Combina todos os dados em um único objeto
-      const allData = {
-        casa: casaData,
-        calibracao: calibracaoData,
-        bcm: bcmData,
-        ligadoMin: ligadoMinData,
-        umidade: umidadeData,
-      };
-  
-      res.json(allData);
-    } catch (error) {
-      res.status(500).json({ message: 'Erro ao buscar dados das tabelas' });
-    }
-  });
 
 module.exports = router;

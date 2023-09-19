@@ -7,23 +7,12 @@ client.on('connect', () => {
   console.log('Conexão estabelecida com sucesso!');
 
   // Subscreve aos tópicos para receber as mensagens
-  client.subscribe('casa');
   client.subscribe('calibracao');
-  client.subscribe('LigadoMin');
-  client.subscribe('BCM365C_2');
-  client.subscribe('umidade');
+  client.subscribe('BCM240_S');
 
   // Quando uma mensagem é recebida em algum dos tópicos
   client.on('message', (topic, message) => {
     console.log(new Date().toISOString() + ` - Mensagem recebida no tópico ${topic}: ${message.toString()}`); 
-    console.log(typeof message)
-    if (
-      topic === 'casa' ||
-      topic === 'calibracao' ||
-      topic === 'LigadoMin' ||
-      topic === 'BCM365C_2' ||
-      topic === 'umidade'
-    ) {}
   });
 });
 
